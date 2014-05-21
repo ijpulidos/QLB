@@ -18,7 +18,7 @@ using namespace arma;
 
 // --------- Declaration and prototipes -----------------------------//
 
-#define L 512
+#define L 2048
 #define TMAX 1000  // maximum time value
 #define n 1 //Condición de cuantización del automata.
 #define beta_0 0.2 //velocidad de propagación del pulso.
@@ -155,7 +155,8 @@ void Qlb_Succi::EvCoeffs(void){
   double coeff, g;
   // building the evolution coeffs.
   for(ix=0;ix<L;ix++){
-    g = WellPotential(0.5*L,L/3,1000,ix);  // For Potential well
+    g = 0;  // For free particle
+    //g = WellPotential(0.5*L,L/3,1000,ix);  // For Potential well
     //clog << ix << " " << g << endl;  // to draw potential
     coeff = 0.25*(mass*mass - g*g);
     an = complex<double>(1-coeff);
@@ -185,8 +186,8 @@ void Qlb_Succi::Evolucione(void){
 }
 
 void Qlb_Succi::Eigenvalues(void){
-  // Builds the evolution matrix and calculate eigenvalues using
-  // armadillo lib
+  /* Builds the evolution matrix A and calculate eigenvalues using
+  armadillo lib */
   int i, j, idx;
   cx_mat A(4*L,4*L);
   //cx_mat A(4,4);
@@ -194,7 +195,7 @@ void Qlb_Succi::Eigenvalues(void){
   //cx_vec eigv(4);
   cx_vec eigvtmp;
   cx_mat eigf;
-  cx_vec eigfv;
+  cx_vec eigfv(4*L);
   A.fill(0.0);  // fill with zeroes
   
   for (i=0;i<4*L;i+=4){
@@ -214,7 +215,7 @@ void Qlb_Succi::Eigenvalues(void){
   //for(i=0;i<4*L;i++){
   //    eigv(i) = abs(eigvtmp(i));
   //}
-  eigvtmp.save("eigv.dat", raw_ascii);
+  eigv.save("eigv.dat", raw_ascii);
   eigf.save("eigf.dat", raw_ascii);
   
   //This jons the u,d for every lattice point from the eigf matrix into eigfv
@@ -333,12 +334,12 @@ int main(){
   for(t=0;t<TMAX;t++){
     WaveFunction.Evolucione();
     // building filename and saving data
-    //oss << "data/rho_sil_" << setfill('0') << setw(4) << t << ".dat";
+    oss << "../data/rho_sil_" << setfill('0') << setw(4) << t << ".dat";
     //WaveFunction.Reconstruction(const_cast<char *>(oss.str()), t);
     //cout << oss.str() << endl;
-    //WaveFunction.Reconstruction(oss.str(), t);
-    //oss.str("");
-    //oss.clear();
+    WaveFunction.Reconstruction(oss.str(), t);
+    oss.str("");
+    oss.clear();
   }
   WaveFunction.Eigenvalues();
   //  WaveFunction.Rho_uno_mas(t);

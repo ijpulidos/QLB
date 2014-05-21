@@ -1,0 +1,29 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 13.04.2 ] */
+
+/* [wxMaxima: input   start ] */
+eq:(a - l)^4 + 2*b^2*(a - l)^2 + b^4 = 0;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+a:-0.999992 + 0.00399998*%I;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+b:-3.99995*10^-7 + 1.59999*10^-9*%I;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+eq:(a - l)^4 + 2*b^2*(a - l)^2 + b^4 = 0;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ratprint: false$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(solve(eq,l));
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
