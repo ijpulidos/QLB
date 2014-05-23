@@ -186,30 +186,38 @@ void Qlb_Succi::Evolucione(void){
 }
 
 void Qlb_Succi::Eigenvalues(void){
-  /* Builds the evolution matrix A and calculate eigenvalues using
-  armadillo lib */
+  /* Builds the evolution matrix U and calculate eigenvalues using
+  armadillo lib.*/
   int i, j, idx;
-  cx_mat A(4*L,4*L);
+  cx_mat C(4*L,4*L);  // Collision matrix
+  cx_mat A(4*L,4*L);  // Advection matrix (traslation)
   //cx_mat A(4,4);
   cx_vec eigv(4*L);
   //cx_vec eigv(4);
   cx_vec eigvtmp;
   cx_mat eigf;
   cx_vec eigfv(4*L);
+  C.fill(0.0);  // fill with zeroes
   A.fill(0.0);  // fill with zeroes
   
+  // Building collision matrix 
   for (i=0;i<4*L;i+=4){
     idx = i/4;
-    A(i,i) = a[idx];
-    A(i,i+2) = b[idx];
-    A(i+1,i+1) = a[idx];
-    A(i+1,i+3) = b[idx];
-    A(i+2,i) = -b[idx];
-    A(i+2,i+2) = a[idx];
-    A(i+3,i+1) = -b[idx];
-    A(i+3,i+3) = a[idx];
+    C(i,i) = a[idx];
+    C(i,i+2) = b[idx];
+    C(i+1,i+1) = a[idx];
+    C(i+1,i+3) = b[idx];
+    C(i+2,i) = -b[idx];
+    C(i+2,i+2) = a[idx];
+    C(i+3,i+1) = -b[idx];
+    C(i+3,i+3) = a[idx];
   }
-  A.save("A.dat", raw_ascii);
+  C.save("C.dat", raw_ascii);
+
+  // Builing advection matrix
+  
+  // Building evolution matrix
+
   eig_gen(eigvtmp, eigf, A);
   eigv = log(eigvtmp)/I;
   //for(i=0;i<4*L;i++){
