@@ -189,8 +189,12 @@ void Qlb_Succi::Eigenvalues(void){
   /* Builds the evolution matrix U and calculate eigenvalues using
   armadillo lib.*/
   int i, j, idx;
+  int flag; // flag to tell me wether even row (1 or 0, 1 for even)
   cx_mat C(4*L,4*L);  // Collision matrix
   cx_mat A(4*L,4*L);  // Advection matrix (traslation)
+  cx_mat Ar(4,4);  // Advection matrix block for "right traslation"
+  cx_mat Al(4,4);  // Advection matrix block for "left traslation"
+  cx_mat T(4,4);  // Time evolution matrix T = A*C
   //cx_mat A(4,4);
   cx_vec eigv(4*L);
   //cx_vec eigv(4);
@@ -199,8 +203,10 @@ void Qlb_Succi::Eigenvalues(void){
   cx_vec eigfv(4*L);
   C.fill(0.0);  // fill with zeroes
   A.fill(0.0);  // fill with zeroes
+  Ar.fill(0.0);  // fill with zeroes
+  Al.fill(0.0);  // fill with zeroes
   
-  // Building collision matrix 
+  // BUILDING COLLISION MATRIX 
   for (i=0;i<4*L;i+=4){
     idx = i/4;
     C(i,i) = a[idx];
@@ -214,11 +220,43 @@ void Qlb_Succi::Eigenvalues(void){
   }
   C.save("C.dat", raw_ascii);
 
-  // Builing advection matrix
   
-  // Building evolution matrix
-
-  eig_gen(eigvtmp, eigf, A);
+  // BUILDING ADVECTION MATRIX
+  /* You have to fill A in two steps, one to fill "even" row-blocks and
+   * other one to fill "odd" row-blocks, that's what flag is for. */
+  flag = 1; // we start with even row-block (0) 
+  for (i=0;i<4*L;i+=4){
+    if (flag==1){ // check if it is an even row-block
+      for (j=4*flag; j<4*L; j+=8){
+        if (j%12==0 && j!=0){
+          A(i,j) = 1;
+          A(i+1,j+1) = 1;
+        }
+        else{
+          A(i+2,j+2) = 1;
+          A(i+3,j+3) = 1;
+        }
+      }
+    }
+    else{
+      for (j=4*flag; j<4*L; j+=8){
+        if (j%16==0){
+          A(i,j) = 1;
+          A(i+1,j+1) = 1;
+        }
+        else{
+          A(i+2,j+2) = 1;
+          A(i+3,j+3) = 1;
+        }
+      }
+    }
+    flag = (flag+1)%2;
+  }
+  A.save("A.dat", raw_ascii);
+  
+  // BUILDING TIME EVOLUTION MATRIX
+  T = A*C;
+  eig_gen(eigvtmp, eigf, T);
   eigv = log(eigvtmp)/I;
   //for(i=0;i<4*L;i++){
   //    eigv(i) = abs(eigvtmp(i));
