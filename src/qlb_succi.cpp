@@ -18,7 +18,7 @@ using namespace arma;
 
 // --------- Declaration and prototipes -----------------------------//
 
-#define L 2048
+#define L 1024
 #define TMAX 1000  // maximum time value
 #define n 1 //Condición de cuantización del automata.
 #define beta_0 0.2 //velocidad de propagación del pulso.
