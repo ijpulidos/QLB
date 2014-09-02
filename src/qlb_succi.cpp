@@ -3,7 +3,7 @@
 // Boltzmann method. 
 // 
 // Author: Ivan Pulido (@ijpulidos)
-// National university of Colombia (Bogota, Colombia)
+// National University of Colombia (Bogota, Colombia)
 // -------------------------------------------------------------//
 
 #include <iostream>
@@ -34,7 +34,6 @@ public:
   Qlb_Succi(void);
   ~Qlb_Succi(void);
   void CargueCeros(void);
-  void CargueInicial(void);
   //void OndaPlana(void);
   void Gaussian(double mu, double sigma);
   double WellPotential(int center, int width, double V0, int x);
@@ -87,11 +86,6 @@ void Qlb_Succi::CargueCeros(void){
     for (i=0;i<4;i++)
       C_spinor[ix][i]=Cero; // Dirección Cero a la derecha. Uno a la izquierda.
   }
-}
-
-void Qlb_Succi::CargueInicial(void){
-  C_spinor[5][0]=1.0*Uno_r+1.0*I;
-  //    C_spinor[ix][i]
 }
 
 /*
@@ -365,7 +359,6 @@ int main(){
   //string filename, partfn;
   //WaveFunction.Gaussiana(L*1.0/2, 5.0);
   WaveFunction.CargueCeros();
-  //WaveFunction.CargueInicial();
   WaveFunction.Gaussian(mu0, sigma0);
   //  WaveFunction.Rho_uno_mas(t);
   
