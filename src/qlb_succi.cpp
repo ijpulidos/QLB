@@ -13,12 +13,13 @@
 #include <cmath>
 #include <complex>
 #include <armadillo>  // linear algebra library
+#include <omp.h>
 using namespace std;
 using namespace arma;
 
 // --------- Declaration and prototipes -----------------------------//
 
-#define L 1024
+#define L 256
 #define TMAX 1000  // maximum time value
 #define n 1 //Condición de cuantización del automata.
 #define beta_0 0.2 //velocidad de propagación del pulso.
@@ -169,6 +170,7 @@ void Qlb_Succi::Evolucione(void){
   complex <double> **aux;
   C=exp(Cero);
 
+#pragma omp parallel for private(ix)
   for(ix=0;ix<L;ix++){
     C_spinor_new[(ix+V[0]+L)%L][0]= a[ix]*C_spinor[ix][0]+b[ix]*C_spinor[ix][3];
     C_spinor_new[(ix+V[1]+L)%L][1]= a[ix]*C_spinor[ix][1]+b[ix]*C_spinor[ix][2];
