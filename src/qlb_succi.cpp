@@ -14,6 +14,7 @@
 #include <complex>
 #include <armadillo>  // linear algebra library
 #include <omp.h>
+#include <ctime>
 using namespace std;
 using namespace arma;
 
@@ -353,11 +354,17 @@ void Qlb_Succi::Reconstruction(string NombreArchivo, double t){
 }
 
 int main(){
+  // variables/struct to measure time
+  double start, end;
+  start = omp_get_wtime();
+  
+  // variables for QLB method
   Qlb_Succi WaveFunction;
   int t;
   t=0;
   double sigma0 = 50.0;
   double mu0 = L*1.0/2;
+  
   //string filename, partfn;
   //WaveFunction.Gaussiana(L*1.0/2, 5.0);
   WaveFunction.CargueCeros();
@@ -383,6 +390,10 @@ int main(){
     oss.clear();
   }
   WaveFunction.Eigenvalues();
+  
+  // Time elapsed since "start"
+  end = omp_get_wtime();
+  cout << "Execution time: "<< end-start << endl;
   //  WaveFunction.Rho_uno_mas(t);
   //stringstream(t) >> partfn;
   //filename = "rho_sil_" + partfn + ".dat";
