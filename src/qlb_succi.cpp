@@ -19,8 +19,8 @@ using namespace arma;
 
 // --------- Declaration and prototipes -----------------------------//
 
-#define L 1024
-#define TMAX 1000  // maximum time value
+#define L 2048
+#define TMAX 2000  // maximum time value
 #define n 1 //Condición de cuantización del automata.
 #define beta_0 0.2 //velocidad de propagación del pulso.
 const complex <double> I (0, 1); // Unidad imaginaria
@@ -150,8 +150,8 @@ void Qlb_Succi::EvCoeffs(void){
   double coeff, g;
   // building the evolution coeffs.
   for(ix=0;ix<L;ix++){
-    g = 0;  // For free particle
-    //g = WellPotential(0.5*L,L/3,1000,ix);  // For Potential well
+    //g = 0;  // For free particle
+    g = WellPotential(0.5*L,L/3,1000,ix);  // For Potential well
     //clog << ix << " " << g << endl;  // to draw potential
     coeff = 0.25*(mass*mass - g*g);
     an = complex<double>(1-coeff);
