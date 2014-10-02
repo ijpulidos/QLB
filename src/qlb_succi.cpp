@@ -22,12 +22,11 @@ using namespace arma;
 
 #define L 2048
 #define TMAX 2000  // maximum time value
-#define n 1 //Condición de cuantización del automata.
-#define beta_0 0.2 //velocidad de propagación del pulso.
-const complex <double> I (0, 1); // Unidad imaginaria
-const complex <double> Cero (0, 0);// Definicion del Cero en I
-const complex <double> Uno_r (1, 0);// Uno real en complejo
-const double mass=0.1 ;// masa de la particula
+#define beta_0 0.2 // propagation speed (related to momentum)
+const complex <double> I (0, 1); // Imaginary unit
+const complex <double> Cero (0, 0);// Zero in complex field
+const complex <double> Uno_r (1, 0);// One in complex field
+const double mass=0.1 ;// particle's mass
 
 //---------------- Main class for QLB -------------------------------//
 
@@ -50,8 +49,8 @@ public:
   double mu(double * f);
 private:
   complex <double> *a, *b;  // evolution coefficients
-  complex <double> **C_spinor,**C_spinor_new; //C_spinor[ix][0]->Derecha,C_spinor [ix][1]->Derecha. Estas son las componentes U, C_spinor[ix][2]->Izquierda, C_spinor[ix][3]->Izquierda. 
-  int V[4];        //V[i], en dirección x. SOn 4 posibles opciones de velocidad. 
+  complex <double> **C_spinor,**C_spinor_new; //[0]->Derecha,[1]->right,[2]->left,[3]->left. The spinor is [u1,u2,d1,d2]
+  int V[4];        // 4 possible velocities in 1D (2 l 2 r). 
 };
 
 Qlb_Succi::Qlb_Succi(void){
@@ -343,7 +342,6 @@ void Qlb_Succi::Reconstruction(string NombreArchivo, double t){
   double rho_grafica;
   complex <double> Phi_1, Phi_2;
   complex <double> expon;
-  //expon=0.7071067812*exp(I*m*t);
   
   for(ix=0;ix<L;ix++){
     Phi_1= (C_spinor[ix][0]+I*C_spinor[ix][3])*0.7071067812 ;
