@@ -94,8 +94,7 @@ void Qlb_Succi::OndaPlana(void){
 }
 */
 
-void Qlb_Succi::Gaussian(double mu, double sigma){// centro, ancho
-  //Llenar los contenidos de las matrices
+void Qlb_Succi::Gaussian(double mu, double sigma){// mean, width
   int ix;
   double k, x, coef;
   complex <double> expon1;
@@ -103,14 +102,13 @@ void Qlb_Succi::Gaussian(double mu, double sigma){// centro, ancho
 
   coef=pow(2*M_PI*sigma*sigma, -0.25);
   for( ix=0;ix<L;ix++){
-    // x=k*(ix-mu);// Vector de Onda centrado con referencia al centro de la gaussiana.
     expon1=exp(I*mass*beta_0*(ix-mu));
     expon2=exp(-I*mass*beta_0*(ix-mu));
     C_spinor[ix][3]=-I*expon1*exp(-0.25*pow((ix-mu)/sigma,2))*coef;
     C_spinor[ix][2]=-I*expon1*exp(-0.25*pow((ix-mu)/sigma,2))*coef;
     C_spinor[ix][1]=expon1*exp(-0.25*pow((ix-mu)/sigma,2))*coef;
-    C_spinor[ix][0]=expon1*exp(-0.25*pow((ix-mu)/sigma,2))*coef;//  Ojo en la definición de la
-    // exponencial, hay un 1/4 que define le gaussiana.
+    C_spinor[ix][0]=expon1*exp(-0.25*pow((ix-mu)/sigma,2))*coef;
+    // Ojo en la definición de la exponencial, hay un 1/4 que define le gaussiana.
     // cout<<ix<<" "<<imag(Psi[ix][0])<<endl;
   }
   
@@ -304,7 +302,6 @@ double Qlb_Succi::sigma(){
   double psi[L];
   complex <double> Phi_1, Phi_2;
   complex <double> expon;
-  //expon=0.7071067812*exp(I*m*t);
   
   for(ix=0;ix<L;ix++){
     Phi_1= (C_spinor[ix][0]+I*C_spinor[ix][3])*0.7071067812 ;
