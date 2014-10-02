@@ -20,8 +20,8 @@ using namespace arma;
 
 // --------- Declaration and prototipes -----------------------------//
 
-#define L 2048
-#define TMAX 2000  // maximum time value
+#define L 1024
+#define TMAX 1000  // maximum time value
 #define beta_0 0.2 // propagation speed (related to momentum)
 const complex <double> I (0, 1); // Imaginary unit
 const complex <double> Cero (0, 0);// Zero in complex field
@@ -34,7 +34,6 @@ class Qlb_Succi{
 public:
   Qlb_Succi(void);
   ~Qlb_Succi(void);
-  void CargueCeros(void);
   //void OndaPlana(void);
   void Gaussian(double mu, double sigma);
   double WellPotential(int center, int width, double V0, int x);
@@ -79,15 +78,6 @@ Qlb_Succi::~Qlb_Succi(void){
   delete [] C_spinor; delete [] C_spinor_new;
 }
 
-
-void Qlb_Succi::CargueCeros(void){
-  //Llenar los contenidos de las matrices
-  int ix, i;
-  for( ix=0;ix<L;ix++){
-    for (i=0;i<4;i++)
-      C_spinor[ix][i]=Cero; // Dirección Cero a la derecha. Uno a la izquierda.
-  }
-}
 
 /*
 void Qlb_Succi::OndaPlana(void){
@@ -365,7 +355,6 @@ int main(){
   
   //string filename, partfn;
   //WaveFunction.Gaussiana(L*1.0/2, 5.0);
-  WaveFunction.CargueCeros();
   WaveFunction.Gaussian(mu0, sigma0);
   //  WaveFunction.Rho_uno_mas(t);
   
