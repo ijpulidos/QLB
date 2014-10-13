@@ -332,7 +332,7 @@ void Qlb_Succi::Reconstruction(string NombreArchivo, double t){
   
   for(ix=0;ix<L;ix++){
     Phi_1= (C_spinor[ix][0]+I*C_spinor[ix][3])*0.7071067812 ;
-    Phi_2= (C_spinor[ix][1]+I*C_spinor[ix][2])*0.7071067812 ;
+    Phi_2= (C_spinor[ix][1]-I*C_spinor[ix][2])*0.7071067812 ;
     rho_grafica=real( (Phi_1)*conj(Phi_1))+real( (Phi_2)*conj(Phi_2));
     MiArchivo<<ix<<" "<<rho_grafica <<endl;
   }
@@ -355,7 +355,7 @@ int main(){
   WaveFunction.Gaussian(mu0, sigma0);
   //  WaveFunction.Rho_uno_mas(t);
   
-  WaveFunction.Reconstruction(const_cast<char *>("rho_sil_0.dat"), t);
+  //WaveFunction.Reconstruction(const_cast<char *>("rho_sil_0.dat"), t);
     
   // Creating string stream for filenames
   ostringstream oss;
@@ -364,9 +364,9 @@ int main(){
   WaveFunction.EvCoeffs();
 
   for(t=0;t<TMAX;t++){
-    WaveFunction.Evolucione();
     // building filename and saving data
     oss << "../data/rho_sil_" << setfill('0') << setw(4) << t << ".dat";
+    WaveFunction.Evolucione();
     //WaveFunction.Reconstruction(const_cast<char *>(oss.str()), t);
     //cout << oss.str() << endl;
     WaveFunction.Reconstruction(oss.str(), t);
