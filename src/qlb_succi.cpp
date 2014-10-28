@@ -124,6 +124,7 @@ double Qlb_Succi::WellPotential(int center, int width, double V0, int x){
 }
 
 double Qlb_Succi::HoPotential(double omega, int x){
+  double V0;
   double pot = mass*omega*omega*x*x;  // useful coefficient
   // ACÁ VOY (REHACER)
   // tengo que pensar que realmente los coeficientes deberían calcularse
