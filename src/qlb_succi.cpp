@@ -20,8 +20,8 @@ using namespace arma;
 
 // --------- Declaration and prototipes -----------------------------//
 
-#define L 1024
-#define TMAX 1000  // maximum time value
+#define L 2048
+#define TMAX 5000  // maximum time value
 #define beta_0 0.2 // propagation speed (related to momentum)
 const complex <double> I (0, 1); // Imaginary unit
 const complex <double> Cero (0, 0);// Zero in complex field
@@ -140,7 +140,7 @@ void Qlb_Succi::EvCoeffs(void){
   // building the evolution coeffs.
   for(ix=0;ix<L;ix++){
     //g = 0;  // For free particle
-    g = WellPotential(0.5*L,L/3,1000,ix);  // For Potential well
+    g = WellPotential(0.5*L,L/3,0.2,ix);  // For Potential well
     //clog << ix << " " << g << endl;  // to draw potential
     coeff = 0.25*(mass*mass - g*g);
     an = complex<double>(1-coeff);
@@ -161,10 +161,10 @@ void Qlb_Succi::Evolucione(void){
 
 #pragma omp parallel for private(ix)
   for(ix=0;ix<L;ix++){
-    C_spinor_new[(ix+V[0]+L)%L][0]= a[ix]*C_spinor[ix][0]+b[ix]*C_spinor[ix][3];
-    C_spinor_new[(ix+V[1]+L)%L][1]= a[ix]*C_spinor[ix][1]+b[ix]*C_spinor[ix][2];
-    C_spinor_new[(ix+V[2]+L)%L][2]= a[ix]*C_spinor[ix][2]-b[ix]*C_spinor[ix][1];
-    C_spinor_new[(ix+V[3]+L)%L][3]= a[ix]*C_spinor[ix][3]-b[ix]*C_spinor[ix][0];
+    C_spinor_new[(ix+V[0]+L)%L][0]= a[ix]*C_spinor[ix][0]+b[ix]*C_spinor[ix][2];
+    C_spinor_new[(ix+V[1]+L)%L][1]= a[ix]*C_spinor[ix][1]+b[ix]*C_spinor[ix][3];
+    C_spinor_new[(ix+V[2]+L)%L][2]= a[ix]*C_spinor[ix][2]-b[ix]*C_spinor[ix][0];
+    C_spinor_new[(ix+V[3]+L)%L][3]= a[ix]*C_spinor[ix][3]-b[ix]*C_spinor[ix][1];
     //cout << a << " " << b << endl;
   }
   aux=C_spinor; C_spinor= C_spinor_new; C_spinor_new=aux;
@@ -205,7 +205,6 @@ void Qlb_Succi::Eigenvalues(void){
   }
   C.save("C.dat", raw_ascii);
 
-  
   // BUILDING ADVECTION MATRIX
   /* You have to fill A in two steps, one to fill "even" row-blocks and
    * other one to fill "odd" row-blocks, that's what flag is for. */
@@ -235,12 +234,14 @@ void Qlb_Succi::Eigenvalues(void){
         }
       }
     }
+    cout << flag << endl;
     flag = (flag+1)%2;
   }
   A.save("A.dat", raw_ascii);
   
   // BUILDING TIME EVOLUTION MATRIX
   T = A*C;
+  T.save("T.dat", raw_ascii);
   eig_gen(eigvtmp, eigf, T);
   eigv = log(eigvtmp)/I;
   //for(i=0;i<4*L;i++){
@@ -305,8 +306,8 @@ double Qlb_Succi::sigma(){
   complex <double> expon;
   
   for(ix=0;ix<L;ix++){
-    Phi_1= (C_spinor[ix][0]+I*C_spinor[ix][3])*0.7071067812 ;
-    Phi_2= (C_spinor[ix][1]+I*C_spinor[ix][2])*0.7071067812 ;
+    Phi_1= (C_spinor[ix][0]+I*C_spinor[ix][2])*0.7071067812 ;
+    Phi_2= (C_spinor[ix][1]+I*C_spinor[ix][3])*0.7071067812 ;
     psi[ix]=real( (Phi_1)*conj(Phi_1))+real( (Phi_2)*conj(Phi_2));
   }
 
@@ -332,8 +333,8 @@ void Qlb_Succi::Reconstruction(string NombreArchivo, double t){
   complex <double> expon;
   
   for(ix=0;ix<L;ix++){
-    Phi_1= (C_spinor[ix][0]+I*C_spinor[ix][3])*0.7071067812 ;
-    Phi_2= (C_spinor[ix][1]-I*C_spinor[ix][2])*0.7071067812 ;
+    Phi_1= (C_spinor[ix][0]+I*C_spinor[ix][2])*0.7071067812 ;
+    Phi_2= (C_spinor[ix][1]-I*C_spinor[ix][3])*0.7071067812 ;
     rho_grafica=real( (Phi_1)*conj(Phi_1))+real( (Phi_2)*conj(Phi_2));
     MiArchivo<<ix<<" "<<rho_grafica <<endl;
   }
@@ -374,7 +375,7 @@ int main(){
     oss.str("");
     oss.clear();
   }
-  WaveFunction.Eigenvalues();
+  //WaveFunction.Eigenvalues();
   
   // Time elapsed since "start"
   end = omp_get_wtime();
